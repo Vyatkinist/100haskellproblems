@@ -29,48 +29,57 @@ myReverse (x:xs) = (myReverse xs) ++ [x]
 myReverse' :: [a] -> [a]
 myReverse' = foldl (\acc x -> x:acc) []
 
---isEq :: [a] -> Integer -> Integer -> Bool
---isEq xs start end = (elementAt xs start) == (elementAt xs end)
-
---takeHalf :: [a] -> [a]
---takeHalf xs = skip (myLength xs)
-
 isPalindrome :: Eq a => [a] -> Bool
-isPalindrome xs = asd xs 0 1
-  where asd xs start end = xs!!start == xs!!end
+isPalindrome xs = foldl (\acc x -> if fst x == snd x then acc else False) True (zipHalves xs)
+  where zipHalves xs = zip (fstHalf xs) (reverse . sndHalf $ xs)
+        splitAtHalf = splitAt (length xs `div` 2)
+        fstHalf = fst . splitAtHalf
+        sndHalf = snd . splitAtHalf
 
 foldExample :: Num a => [a] -> a
 foldExample xs = foldl (+) 0 xs
 
+data NestedList a = Elem a | List [NestedList a]
+
+flatten :: NestedList a -> [a]
+flatten (Elem a) = [a]
+flatten (List (x:xs)) = flatten x ++ flatten (List xs)
+flatten (List []) = []
+
 main = do
   putStrLn "Exercises from: https://wiki.haskell.org/99_questions/1_to_10"
 
-  putStrLn "E1: Last element"
+  putStrLn "-------E1: Last element"
   putStrLn . show $ myLast [1..4]
   putStrLn . show $ myLast ['a'..'z']
 
-  putStrLn "E2: Element before last"
+  putStrLn "-------E2: Element before last"
   putStrLn . show $ myButLast [1..3]
   putStrLn . show $ myButLast ['a'..'d']
 
-  putStrLn "E3:"
+  putStrLn "-------E3:"
   putStrLn . show $ elementAt [1,2,3] 2
   putStrLn . show $ elementAt "haskell" 5
 
-  putStrLn "E4"
+  putStrLn "-------E4"
   putStrLn . show $ myLength [123, 456, 789]
   putStrLn . show $ myLength "Hello, world!"
 
   putStrLn . show $ myLength' [123, 456, 789]
   putStrLn . show $ myLength' "Hello, world!"
 
-  putStrLn "E5"
+  putStrLn "-------E5"
   putStrLn . show $ myReverse' "A man, a plan, a canal, panama!"
   putStrLn . show $ myReverse' [1,2,3,4]
   
-  putStrLn "E6"
+  putStrLn "-------E6"
   putStrLn . show $ isPalindrome [1,2,3]
   putStrLn . show $ isPalindrome "madamimadam"
   putStrLn . show $ isPalindrome [1,2,4,8,16,8,4,2,1]
 
-  putStrLn . show $ fst $ splitAt 2 [1..9]
+  putStrLn "-------E7"
+  putStrLn . show $ flatten (Elem 5)
+  putStrLn . show $ flatten (List [Elem 1, List [Elem 2, List [Elem 3, Elem 4], Elem 5]])
+  putStrLn $ flatten (List [])
+
+  
