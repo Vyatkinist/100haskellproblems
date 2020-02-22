@@ -46,6 +46,9 @@ flatten (Elem a) = [a]
 flatten (List (x:xs)) = flatten x ++ flatten (List xs)
 flatten (List []) = []
 
+compress :: Eq a => [a] -> [a]
+compress xs = foldl (\acc x -> if (last acc) == x then acc else acc ++ [x]) [head xs] (tail xs)
+
 main = do
   putStrLn "Exercises from: https://wiki.haskell.org/99_questions/1_to_10"
 
@@ -82,4 +85,5 @@ main = do
   putStrLn . show $ flatten (List [Elem 1, List [Elem 2, List [Elem 3, Elem 4], Elem 5]])
   putStrLn $ flatten (List [])
 
-  
+  putStrLn "-------E8"
+  putStrLn . show $ compress "aaaabccaadeeee"
