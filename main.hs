@@ -49,6 +49,24 @@ flatten (List []) = []
 compress :: Eq a => [a] -> [a]
 compress xs = foldl (\acc x -> if (last acc) == x then acc else acc ++ [x]) [head xs] (tail xs)
 
+pack :: Eq a => [a] -> [[a]]
+pack [] = []
+pack [x] = [[x]]
+pack (x:xs) = if x `elem` (head . pack $ xs)
+              then (x:(head . pack $ xs)):(tail . pack $ xs)
+              else [x]:(pack xs)
+
+encode :: Eq a => [a] -> [(Int, a)]
+encode [] = []
+encode [x] = [(1, x)]
+encode (x:xs) = if x == (snd . head . encode $ xs)
+                then (1 + (fst . head . encode $ xs), x):(tail . encode $ xs)
+                else (1, x):(encode xs)
+
+encode' :: Eq a => [a] -> [(Int, a)]
+encode' xs = map (\x -> (length x, head x)) (pack xs)
+
+
 main = do
   putStrLn "Exercises from: https://wiki.haskell.org/99_questions/1_to_10"
 
@@ -87,3 +105,10 @@ main = do
 
   putStrLn "-------E8"
   putStrLn . show $ compress "aaaabccaadeeee"
+
+  putStrLn "-------E9"
+  putStrLn . show $ pack ['a', 'a', 'a', 'a', 'b', 'c', 'c', 'a', 'a', 'd', 'e', 'e', 'e', 'e']
+
+  putStrLn "-------E10"
+  putStrLn . show $ encode "aaaabccaadeeee"
+  putStrLn . show $ encode' "aaaabccaadeeee"
