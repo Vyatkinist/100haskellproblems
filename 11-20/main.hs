@@ -31,8 +31,35 @@ encodeDirect (x:xs) = if x == decodeSymbol (head (encodeDirect xs))
     decodeSymbol (Multiple _ y) = y
     decodeNum (Single _) = 1
     decodeNum (Multiple n _) = n
-    
-    
+
+dupli :: [a] -> [a]
+dupli [] = []
+dupli (x:xs) = x:x:dupli xs
+
+dupli' :: [a] -> [a]
+dupli' xs = concat [[x,x] | x <- xs]
+
+repli :: [a] -> Int -> [a]
+repli xs n = concat [replicate n x | x <- xs]
+
+repli' :: [a] -> Int -> [a]
+repli' xs n = concat [take' n (repeat' x) | x <- xs]
+
+repeat' :: a -> [a]
+repeat' a = a:repeat' a
+
+take' :: Int -> [a] -> [a]
+take' n (x:xs) 
+  | n > 0 = x:take' (n-1) xs 
+  | otherwise = []
+
+dropEvery :: [a] -> Int -> [a]
+dropEvery xs n = dropEveryInner xs n 1
+  where 
+    dropEveryInner [] _ _ = []
+    dropEveryInner (x:xs) n counter 
+      | counter `mod` n == 0 = dropEveryInner xs n (counter + 1)
+      | otherwise = x : dropEveryInner xs n (counter + 1)
 
 main = do
   putStrLn "Exercises from: https://wiki.haskell.org/99_questions/11_to_20"
@@ -48,4 +75,13 @@ main = do
   putStrLn "-------E13"
   print $ encodeDirect "aaaabccaadeeee"
 
-  
+  putStrLn "-------E14"
+  print $ dupli [1, 2, 3]
+  print $ dupli' [1, 2, 3]
+
+  putStrLn "-------E15"
+  print $ repli "abc" 3
+  print $ repli' "abc" 3
+
+  putStrLn "-------E16"
+  print $ dropEvery "abcdefghik" 3
