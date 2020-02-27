@@ -49,17 +49,33 @@ repeat' :: a -> [a]
 repeat' a = a:repeat' a
 
 take' :: Int -> [a] -> [a]
-take' n (x:xs) 
-  | n > 0 = x:take' (n-1) xs 
+take' n (x:xs)
+  | n > 0 = x:take' (n-1) xs
   | otherwise = []
 
 dropEvery :: [a] -> Int -> [a]
 dropEvery xs n = dropEveryInner xs n 1
-  where 
+  where
     dropEveryInner [] _ _ = []
-    dropEveryInner (x:xs) n counter 
+    dropEveryInner (x:xs) n counter
       | counter `mod` n == 0 = dropEveryInner xs n (counter + 1)
       | otherwise = x : dropEveryInner xs n (counter + 1)
+
+split :: [a] -> Int -> [[a]]
+split xs n = [take n xs, drop n xs]
+
+slice :: [a] -> Int -> Int -> [a]
+slice xs n m
+  | n > 0 && n <=m = take (m - n + 1) (drop (n - 1) xs)
+
+rotate :: [a] -> Int -> [a]
+rotate (x:xs) n
+  | n > 0 = rotate (xs ++ [x]) (n-1)
+  | n == 0 = x:xs
+  | n < 0 = rotate (x:xs) (length (x:xs) + n)
+
+removeAt :: Int -> [a] -> (a, [a])
+removeAt n xs = (xs!!(n-1), take (n-1) xs ++ drop n xs)
 
 main = do
   putStrLn "Exercises from: https://wiki.haskell.org/99_questions/11_to_20"
@@ -85,3 +101,16 @@ main = do
 
   putStrLn "-------E16"
   print $ dropEvery "abcdefghik" 3
+
+  putStrLn "-------E17"
+  print $ split "abcdefghik" 3
+
+  putStrLn "-------E18"
+  print $ slice ['a','b','c','d','e','f','g','h','i','k'] 3 7
+
+  putStrLn "-------E19"
+  print $ rotate ['a','b','c','d','e','f','g','h'] 3
+  print $ rotate ['a','b','c','d','e','f','g','h'] (-2)
+
+  putStrLn "-------E20"
+  print $ removeAt 2 "abcd"

@@ -3,8 +3,8 @@ myLast (x:[]) = x
 myLast (_:xs) = myLast xs
 
 myButLast :: [a] -> a
-myButLast (x:[]) = error "A list has to contain at least two elements."
-myButLast (x1:x2:[]) = x2
+myButLast (_:[]) = error "A list has to contain at least two elements."
+myButLast (_:x2:[]) = x2
 myButLast (_:x2:xs) = myButLast (x2:xs)
 
 elementAt :: [a] -> Integer -> a
@@ -66,7 +66,7 @@ encode (x:xs) = if x == (snd . head . encode $ xs)
 encode' :: Eq a => [a] -> [(Int, a)]
 encode' xs = map (\x -> (length x, head x)) (pack xs)
 
-
+main :: IO()
 main = do
   putStrLn "Exercises from: https://wiki.haskell.org/99_questions/1_to_10"
 
